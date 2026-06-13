@@ -1,0 +1,222 @@
+Project Title: Grab SuperApp Simulator (C++)
+
+Objective:
+Develop a console-based C++ application inspired by Grab's disruptive innovation in the transportation industry. The system should demonstrate how Grab transformed traditional taxi services and later expanded into a digital ecosystem.
+
+Program Requirements:
+
+1. Main Menu System
+
+* Use a do-while loop to continuously display the menu until the user chooses to exit.
+* Use switch-case statements for menu navigation.
+
+Menu:
+
+1. Book GrabRide
+
+2. Fare Estimator
+
+3. GrabFood Order
+
+4. View Last Booking
+
+5. About Grab Innovation
+
+6. Exit
+
+7. GrabRide Booking Module
+   Purpose:
+   Simulate Grab's core ride-hailing technology.
+
+User Inputs:
+
+* Passenger name
+* Pickup location
+* Destination
+* Number of passengers
+* Distance (km)
+* Rain condition (Y/N)
+* Peak hour condition (Y/N)
+
+System Features:
+A. Vehicle Recommendation
+
+* 1–4 passengers → GrabCar
+* 5–6 passengers → Grab6
+
+B. Driver Matching Simulation
+Randomly assign:
+
+* Driver name
+* Vehicle model
+* Estimated arrival time (ETA)
+
+Example Output:
+Driver Found!
+Driver: Ahmad
+Vehicle: Perodua Bezza
+ETA: 4 minutes
+
+C. Dynamic Fare Calculation
+Base Fare:
+RM5.00 + (Distance × RM1.20)
+
+Surge Pricing Rules:
+
+* Rain AND Peak Hour → +50%
+* Rain OR Peak Hour → +20%
+* Neither → No surcharge
+
+Output:
+Provide a complete fare breakdown:
+
+* Base Fare
+* Distance Charge
+* Surge Charge
+* Total Fare
+
+Display:
+"Unlike traditional taxis, Grab guarantees this upfront fare."
+
+3. Fare Estimator Module
+   Purpose:
+   Allow users to estimate fares without booking a ride.
+
+Inputs:
+
+* Distance
+* Rain condition
+* Peak hour condition
+
+Outputs:
+
+* Estimated fare
+* Fare breakdown
+
+4. GrabFood Order Module
+   Purpose:
+   Demonstrate Grab's ecosystem expansion beyond ride-hailing.
+
+Inputs:
+
+* Restaurant selection
+
+  1. McDonald's
+  2. KFC
+  3. Pizza Hut
+* Distance
+
+Food Prices:
+
+* McDonald's = RM15
+* KFC = RM18
+* Pizza Hut = RM25
+
+Delivery Charges:
+
+* Distance ≤ 5 km → RM3
+* Distance > 5 km → RM6
+
+Outputs:
+
+* Food cost
+* Delivery fee
+* Total amount
+
+5. Last Booking Record Module
+   Purpose:
+   Store and display information from the most recent ride booking.
+
+Use a struct to store:
+
+* Passenger name
+* Driver name
+* Vehicle type
+* Pickup location
+* Destination
+* Distance
+* Total fare
+
+Menu Option:
+View Last Booking
+
+Display all saved ride information.
+
+6. About Grab Innovation Module
+   Purpose:
+   Strongly connect Part 2 with Part 1.
+
+Display:
+
+"Grab disrupted the traditional taxi industry through digital ride-hailing technology.
+
+Using mobile applications, GPS matching, cashless payments, and dynamic pricing, Grab transformed transportation services across Southeast Asia.
+
+This project is based on Christensen's Disruptive Innovation Model."
+
+7. Error Handling (Mandatory)
+   The system must:
+
+* Reject negative distances
+* Reject invalid menu options
+* Handle non-numeric input using cin.fail()
+* Re-prompt users until valid input is entered
+
+Example:
+
+if (cin.fail())
+{
+cin.clear();
+cin.ignore(1000, '\n');
+}
+
+8. Programming Concepts Required
+   The program should demonstrate:
+
+* Functions
+* switch-case
+* nested if-else
+* do-while loops
+* arrays (for driver names)
+* structures (struct)
+* input validation
+* modular programming
+
+Suggested Functions:
+
+* displayMenu()
+* calculateFare()
+* recommendVehicle()
+* assignDriver()
+* bookRide()
+* estimateFare()
+* orderFood()
+* viewLastBooking()
+* aboutGrab()
+
+9. Code Quality Requirements
+
+* Meaningful variable names
+* Proper comments
+* Consistent formatting
+* Modular function design
+
+10. Testing Cases
+    Prepare at least 3 test cases:
+
+* Normal booking
+* Peak-hour/rain surcharge booking
+* Invalid input scenario
+
+Expected Outcome:
+The application should feel like a mini Grab ecosystem rather than a simple calculator, demonstrating both the disruptive ride-hailing innovation and its ecosystem expansion.
+
+we should commit the git like below:
+**Commit 1**: git commit -m "Initialize project and create main menu framework (do-while)"
+
+* **Commit 2**: git commit -m "Implement Module 1 & 2: Base fare calculation and Surge Pricing logic"
+* **Commit 3**: git commit -m "Add driver array and random driver assignment feature"
+* **Commit 4**: git commit -m "Develop Module 3: GrabFood delivery logic"
+* **Commit 5**: git commit -m "Implement Struct for Module 4: Save and view Last Booking Record"
+* **Commit 6**: git commit -m "Add Error Handling: Fix cin.fail() infinite loops and invalid inputs"
+* **Commit 7**: git commit -m "Final review: Add About Grab info, code comments and formatting"
