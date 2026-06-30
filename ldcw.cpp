@@ -3,6 +3,8 @@
 #include <limits>
 #include <iomanip> // Required for formatting currency (setprecision)
 #include <cctype>  // Required for toupper()
+#include <cstdlib> // Required for rand() and srand()
+#include <ctime>   // Required for time()
 
 using namespace std;
 
@@ -23,6 +25,9 @@ double calculateTotalFare(double distance, char rain, char peak, double &baseFar
 // MAIN FUNCTION
 // ==========================================
 int main() {
+    // Initialize random seed for driver assignment
+    srand(time(0)); 
+    
     int userChoice = 0;
 
     do {
@@ -149,21 +154,53 @@ void bookGrabRide() {
     cout << "Is it peak hour? (Y/N): ";
     cin >> peak;
 
+    // Call helper function for pricing
+    totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
+
+    // --- NEW: Commit 3 Logic (Driver Arrays and Random Assignment) ---
+    
     // Vehicle Recommendation Logic
     string vehicleType = (pax <= 4) ? "GrabCar" : "Grab6";
 
-    // Call helper function
-    totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
+    // Arrays for Driver Assignment
+    string driverNames[] = {"Ahmad", "Siti", "Muthu", "Mei Ling", "John", "Ali", "Chong", "Fatima"};
+    string grabCarModels[] = {"Perodua Bezza", "Toyota Vios", "Honda City", "Proton Saga", "Nissan Almera"};
+    string grab6Models[] = {"Perodua Alza", "Toyota Innova", "Honda BR-V", "Mitsubishi Xpander"};
 
-    // Print Receipt
+    // Randomize Driver details
+    int numDrivers = sizeof(driverNames) / sizeof(driverNames[0]);
+    string assignedDriver = driverNames[rand() % numDrivers];
+    
+    // Assign proper vehicle model based on capacity
+    string assignedVehicleModel;
+    if (pax <= 4) {
+        int numGrabCar = sizeof(grabCarModels) / sizeof(grabCarModels[0]);
+        assignedVehicleModel = grabCarModels[rand() % numGrabCar];
+    } else {
+        int numGrab6 = sizeof(grab6Models) / sizeof(grab6Models[0]);
+        assignedVehicleModel = grab6Models[rand() % numGrab6];
+    }
+    
+    // Generate Random ETA between 2 and 12 minutes
+    int eta = (rand() % 11) + 2; 
+
+    // --- Print Receipt ---
     cout << "\n=================================" << endl;
     cout << "         BOOKING CONFIRMED       " << endl;
     cout << "=================================" << endl;
     cout << "Passenger : " << passengerName << endl;
     cout << "Route     : " << pickup << " -> " << destination << endl;
     cout << "Vehicle   : " << vehicleType << " (Fits " << pax << " pax)" << endl;
-    // Driver logic will be added in Commit 3
-    cout << "\n--- FARE BREAKDOWN ---" << endl;
+    
+    // Driver Match Simulation Output
+    cout << "---------------------------------" << endl;
+    cout << "Driver Found!" << endl;
+    cout << "Driver    : " << assignedDriver << endl;
+    cout << "Model     : " << assignedVehicleModel << endl;
+    cout << "ETA       : " << eta << " minutes" << endl;
+    
+    cout << "---------------------------------" << endl;
+    cout << "--- FARE BREAKDOWN ---" << endl;
     cout << fixed << setprecision(2); // Set output to 2 decimal places
     cout << "Base Fare      : RM " << baseFare << endl;
     if (surgeCharge > 0) {
