@@ -9,6 +9,23 @@
 using namespace std;
 
 // ==========================================
+// STRUCT DEFINITION (Commit 5)
+// ==========================================
+struct BookingRecord {
+    string passengerName;
+    string driverName;
+    string vehicleType;
+    string pickupLocation;
+    string destination;
+    double distance = 0.0;
+    double totalFare = 0.0;
+    bool hasRecord = false; // Flag to check if a ride was booked
+};
+
+// Global struct instance to store the most recent booking
+BookingRecord lastBooking;
+
+// ==========================================
 // FUNCTION PROTOTYPES
 // ==========================================
 void displayMenu();
@@ -182,6 +199,16 @@ void bookGrabRide() {
     // Generate Random ETA between 2 and 12 minutes
     int eta = (rand() % 11) + 2; 
 
+    // --- NEW: Commit 5 Logic (Save to Struct) ---
+    lastBooking.passengerName = passengerName;
+    lastBooking.driverName = assignedDriver;
+    lastBooking.vehicleType = vehicleType + " (" + assignedVehicleModel + ")";
+    lastBooking.pickupLocation = pickup;
+    lastBooking.destination = destination;
+    lastBooking.distance = distance;
+    lastBooking.totalFare = totalFare;
+    lastBooking.hasRecord = true; // Mark that a booking has been made
+
     // --- Print Receipt ---
     cout << "\n=================================" << endl;
     cout << "         BOOKING CONFIRMED       " << endl;
@@ -319,10 +346,23 @@ void orderGrabFood() {
     cout << "=================================\n" << endl;
 }
 
-// Placeholder for Module 4
+// --- MODULE 4: VIEW LAST BOOKING ---
 void viewLastBooking() {
-    cout << "\n---> [Module 4: View Last Booking running...]" << endl;
-    // TODO in Commit 5: Add struct logic to display saved ride.
+    cout << "\n--- LAST BOOKING RECORD ---" << endl;
+    
+    if (!lastBooking.hasRecord) {
+        cout << "[!] No booking records found. Please book a ride first.\n" << endl;
+        return;
+    }
+
+    cout << "Passenger : " << lastBooking.passengerName << endl;
+    cout << "Driver    : " << lastBooking.driverName << endl;
+    cout << "Vehicle   : " << lastBooking.vehicleType << endl;
+    cout << "Route     : " << lastBooking.pickupLocation << " -> " << lastBooking.destination << endl;
+    cout << "Distance  : " << lastBooking.distance << " km" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Total Fare: RM " << lastBooking.totalFare << endl;
+    cout << "---------------------------\n" << endl;
 }
 
 // Placeholder for Module 5
