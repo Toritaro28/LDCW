@@ -157,8 +157,6 @@ void bookGrabRide() {
     // Call helper function for pricing
     totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
 
-    // --- NEW: Commit 3 Logic (Driver Arrays and Random Assignment) ---
-    
     // Vehicle Recommendation Logic
     string vehicleType = (pax <= 4) ? "GrabCar" : "Grab6";
 
@@ -246,10 +244,79 @@ void estimateFare() {
     cout << "-------------------------\n" << endl;
 }
 
-// Placeholder for Module 3
+// --- MODULE 3: GRABFOOD ORDER ---
 void orderGrabFood() {
-    cout << "\n---> [Module 3: GrabFood Order running...]" << endl;
-    // TODO in Commit 4: Add restaurant selection and delivery fee logic here.
+    int restaurantChoice;
+    double distance, foodCost, deliveryFee, totalAmount;
+    string restaurantName;
+
+    cout << "\n--- GRABFOOD ORDER ---" << endl;
+    cout << "Select a Restaurant:" << endl;
+    cout << "1. McDonald's (RM 15.00)" << endl;
+    cout << "2. KFC        (RM 18.00)" << endl;
+    cout << "3. Pizza Hut  (RM 25.00)" << endl;
+    
+    // Input Validation for Restaurant Selection
+    do {
+        cout << "Enter your choice (1-3): ";
+        cin >> restaurantChoice;
+        if (cin.fail() || restaurantChoice < 1 || restaurantChoice > 3) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "[!] Invalid choice. Please select a valid restaurant option (1, 2, or 3).\n";
+        }
+    } while (restaurantChoice < 1 || restaurantChoice > 3);
+
+    // Assign price and name based on choice
+    switch (restaurantChoice) {
+        case 1:
+            restaurantName = "McDonald's";
+            foodCost = 15.00;
+            break;
+        case 2:
+            restaurantName = "KFC";
+            foodCost = 18.00;
+            break;
+        case 3:
+            restaurantName = "Pizza Hut";
+            foodCost = 25.00;
+            break;
+    }
+
+    // Input Validation for Distance
+    do {
+        cout << "Delivery Distance (km): ";
+        cin >> distance;
+        if(cin.fail() || distance <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "[!] Invalid input. Distance must be a positive number.\n";
+        }
+    } while (distance <= 0);
+
+    // Calculate Delivery Fee
+    if (distance <= 5.0) {
+        deliveryFee = 3.00;
+    } else {
+        deliveryFee = 6.00;
+    }
+
+    // Calculate Total
+    totalAmount = foodCost + deliveryFee;
+
+    // Display Output Breakdown
+    cout << "\n=================================" << endl;
+    cout << "       GRABFOOD RECEIPT          " << endl;
+    cout << "=================================" << endl;
+    cout << "Restaurant : " << restaurantName << endl;
+    cout << "Distance   : " << distance << " km" << endl;
+    cout << "---------------------------------" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Food Cost  : RM " << foodCost << endl;
+    cout << "Delivery   : RM " << deliveryFee << endl;
+    cout << "---------------------------------" << endl;
+    cout << "Total Paid : RM " << totalAmount << endl;
+    cout << "=================================\n" << endl;
 }
 
 // Placeholder for Module 4
