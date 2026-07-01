@@ -1,222 +1,430 @@
-Project Title: Grab SuperApp Simulator (C++)
+/*
+ * Project Title: Grab SuperApp Simulator (C++)
+ * Description: A console-based C++ application simulating Grab's disruptive 
+ *              innovation in ride-hailing and ecosystem expansion (GrabFood).
+ *              Demonstrates modular programming, structs, arrays, and error handling.
+ */
 
-Objective:
-Develop a console-based C++ application inspired by Grab's disruptive innovation in the transportation industry. The system should demonstrate how Grab transformed traditional taxi services and later expanded into a digital ecosystem.
+#include <iostream>
+#include <string>
+#include <iomanip> // Required for formatting currency to 2 decimal places
+#include <cctype>  // Required for toupper()
+#include <cstdlib> // Required for rand() and srand()
+#include <ctime>   // Required for time() seed
 
-Program Requirements:
+using namespace std;
 
-1. Main Menu System
+// ==========================================
+// STRUCT DEFINITION
+// ==========================================
+// Stores the details of the most recent ride booking
+struct BookingRecord {
+    string passengerName;
+    string driverName;
+    string vehicleType;
+    string pickupLocation;
+    string destination;
+    double distance = 0.0;
+    double totalFare = 0.0;
+    bool hasRecord = false; // Flag to check if a ride has been booked yet
+};
 
-* Use a do-while loop to continuously display the menu until the user chooses to exit.
-* Use switch-case statements for menu navigation.
+// Global instance to hold the latest booking session data
+BookingRecord lastBooking;
 
-Menu:
+// ==========================================
+// FUNCTION PROTOTYPES
+// ==========================================
+void displayMenu();
+void bookGrabRide();
+void estimateFare();
+void orderGrabFood();
+void viewLastBooking();
+void aboutGrab();
 
-1. Book GrabRide
+// Helper Functions for modularity, calculation, and input validation
+double calculateTotalFare(double distance, char rain, char peak, double &baseFare, double &surgeCharge);
+char getYesNoInput(string prompt); 
 
-2. Fare Estimator
+// ==========================================
+// MAIN FUNCTION
+// ==========================================
+int main() {
+    // Initialize random seed based on current time for random driver/vehicle assignment
+    srand(time(0)); 
+    
+    int userChoice = 0;
 
-3. GrabFood Order
+    // Main program loop - runs until user inputs '6' to exit
+    do {
+        displayMenu();
+        cout << "Please select an option (1-6): ";
+        cin >> userChoice;
 
-4. View Last Booking
+        // Mandatory Error Handling: Handle non-numeric string/char inputs
+        if (cin.fail()) {
+            cin.clear(); // Clear the error flag
+            cin.ignore(1000, '\n'); // Discard invalid input in the buffer
+            cout << "\n[!] ERROR: Invalid input. Please enter a valid number." << endl;
+            continue; // Skip the rest of the loop and show the menu again
+        }
+        
+        // Clear trailing characters to prevent accidental buffer overflow into next prompts
+        cin.ignore(1000, '\n');
 
-5. About Grab Innovation
+        // Navigation based on user choice
+        switch (userChoice) {
+            case 1:
+                bookGrabRide();
+                break;
+            case 2:
+                estimateFare();
+                break;
+            case 3:
+                orderGrabFood();
+                break;
+            case 4:
+                viewLastBooking();
+                break;
+            case 5:
+                aboutGrab();
+                break;
+            case 6:
+                cout << "\nThank you for using the Grab SuperApp Simulator. Goodbye!" << endl;
+                break;
+            default:
+                // Error Handling: Reject out-of-range menu options
+                cout << "\n[!] ERROR: Invalid choice. Please select a number between 1 and 6." << endl;
+        }
+    } while (userChoice != 6);
 
-6. Exit
-
-7. GrabRide Booking Module
-   Purpose:
-   Simulate Grab's core ride-hailing technology.
-
-User Inputs:
-
-* Passenger name
-* Pickup location
-* Destination
-* Number of passengers
-* Distance (km)
-* Rain condition (Y/N)
-* Peak hour condition (Y/N)
-
-System Features:
-A. Vehicle Recommendation
-
-* 1–4 passengers → GrabCar
-* 5–6 passengers → Grab6
-
-B. Driver Matching Simulation
-Randomly assign:
-
-* Driver name
-* Vehicle model
-* Estimated arrival time (ETA)
-
-Example Output:
-Driver Found!
-Driver: Ahmad
-Vehicle: Perodua Bezza
-ETA: 4 minutes
-
-C. Dynamic Fare Calculation
-Base Fare:
-RM5.00 + (Distance × RM1.20)
-
-Surge Pricing Rules:
-
-* Rain AND Peak Hour → +50%
-* Rain OR Peak Hour → +20%
-* Neither → No surcharge
-
-Output:
-Provide a complete fare breakdown:
-
-* Base Fare
-* Distance Charge
-* Surge Charge
-* Total Fare
-
-Display:
-"Unlike traditional taxis, Grab guarantees this upfront fare."
-
-3. Fare Estimator Module
-   Purpose:
-   Allow users to estimate fares without booking a ride.
-
-Inputs:
-
-* Distance
-* Rain condition
-* Peak hour condition
-
-Outputs:
-
-* Estimated fare
-* Fare breakdown
-
-4. GrabFood Order Module
-   Purpose:
-   Demonstrate Grab's ecosystem expansion beyond ride-hailing.
-
-Inputs:
-
-* Restaurant selection
-
-  1. McDonald's
-  2. KFC
-  3. Pizza Hut
-* Distance
-
-Food Prices:
-
-* McDonald's = RM15
-* KFC = RM18
-* Pizza Hut = RM25
-
-Delivery Charges:
-
-* Distance ≤ 5 km → RM3
-* Distance > 5 km → RM6
-
-Outputs:
-
-* Food cost
-* Delivery fee
-* Total amount
-
-5. Last Booking Record Module
-   Purpose:
-   Store and display information from the most recent ride booking.
-
-Use a struct to store:
-
-* Passenger name
-* Driver name
-* Vehicle type
-* Pickup location
-* Destination
-* Distance
-* Total fare
-
-Menu Option:
-View Last Booking
-
-Display all saved ride information.
-
-6. About Grab Innovation Module
-   Purpose:
-   Strongly connect Part 2 with Part 1.
-
-Display:
-
-"Grab disrupted the traditional taxi industry through digital ride-hailing technology.
-
-Using mobile applications, GPS matching, cashless payments, and dynamic pricing, Grab transformed transportation services across Southeast Asia.
-
-This project is based on Christensen's Disruptive Innovation Model."
-
-7. Error Handling (Mandatory)
-   The system must:
-
-* Reject negative distances
-* Reject invalid menu options
-* Handle non-numeric input using cin.fail()
-* Re-prompt users until valid input is entered
-
-Example:
-
-if (cin.fail())
-{
-cin.clear();
-cin.ignore(1000, '\n');
+    return 0;
 }
 
-8. Programming Concepts Required
-   The program should demonstrate:
+// ==========================================
+// FUNCTION IMPLEMENTATIONS
+// ==========================================
 
-* Functions
-* switch-case
-* nested if-else
-* do-while loops
-* arrays (for driver names)
-* structures (struct)
-* input validation
-* modular programming
+// Displays the main menu of the Grab ecosystem
+void displayMenu() {
+    cout << "\n=================================" << endl;
+    cout << "         GRAB SUPERAPP           " << endl;
+    cout << "=================================" << endl;
+    cout << "1. Book GrabRide" << endl;
+    cout << "2. Fare Estimator" << endl;
+    cout << "3. GrabFood Order" << endl;
+    cout << "4. View Last Booking" << endl;
+    cout << "5. About Grab Innovation" << endl;
+    cout << "6. Exit" << endl;
+    cout << "=================================" << endl;
+}
 
-Suggested Functions:
+// --- HELPER FUNCTION: Get Validated Yes/No Input ---
+// Prompts user until they enter exactly 'Y' or 'N' (case-insensitive)
+char getYesNoInput(string prompt) {
+    char input;
+    while (true) {
+        cout << prompt;
+        cin >> input;
+        
+        if (cin.fail() || (toupper(input) != 'Y' && toupper(input) != 'N')) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Please enter 'Y' or 'N'.\n";
+        } else {
+            cin.ignore(1000, '\n'); // Clear buffer for next inputs
+            return toupper(input);
+        }
+    }
+}
 
-* displayMenu()
-* calculateFare()
-* recommendVehicle()
-* assignDriver()
-* bookRide()
-* estimateFare()
-* orderFood()
-* viewLastBooking()
-* aboutGrab()
+// --- HELPER FUNCTION: Calculate Fare & Surge Pricing ---
+// Demonstrates dynamic pricing, a key component of Grab's disruptive technology
+double calculateTotalFare(double distance, char rain, char peak, double &baseFare, double &surgeCharge) {
+    // Base formula: RM5.00 flat fee + (Distance * RM1.20/km)
+    baseFare = 5.00 + (distance * 1.20);
+    double surgeMultiplier = 0.0;
 
-9. Code Quality Requirements
+    // Nested if-else logic for surge multiplier
+    if (rain == 'Y' && peak == 'Y') {
+        surgeMultiplier = 0.50; // +50% surge for extreme demand
+    } else if (rain == 'Y' || peak == 'Y') {
+        surgeMultiplier = 0.20; // +20% surge for moderate demand
+    }
 
-* Meaningful variable names
-* Proper comments
-* Consistent formatting
-* Modular function design
+    surgeCharge = baseFare * surgeMultiplier;
+    return baseFare + surgeCharge;
+}
 
-10. Testing Cases
-    Prepare at least 3 test cases:
+// --- MODULE 1: BOOK GRAB RIDE ---
+// Simulates booking a ride, passenger input, and driver matching
+void bookGrabRide() {
+    string passengerName, pickup, destination;
+    int pax;
+    double distance, baseFare, surgeCharge, totalFare;
+    char rain, peak;
 
-* Normal booking
-* Peak-hour/rain surcharge booking
-* Invalid input scenario
+    cout << "\n--- BOOK GRABRIDE ---" << endl;
 
-Expected Outcome:
-The application should feel like a mini Grab ecosystem rather than a simple calculator, demonstrating both the disruptive ride-hailing innovation and its ecosystem expansion.
+    // Get passenger details
+    cout << "Enter Passenger Name: ";
+    getline(cin, passengerName);
+    
+    cout << "Enter Pickup Location: ";
+    getline(cin, pickup);
+    
+    cout << "Enter Destination: ";
+    getline(cin, destination);
 
-we should commit the git like below:
-**Commit 1**: git commit -m "Initialize project and create main menu framework (do-while)"
+    // Input Validation for Passengers (Must be 1 to 6)
+    while (true) {
+        cout << "Number of Passengers (1-6): ";
+        cin >> pax;
+        if (cin.fail() || pax < 1 || pax > 6) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Vehicles can only fit 1 to 6 passengers.\n";
+        } else {
+            cin.ignore(1000, '\n'); 
+            break;
+        }
+    }
 
-* **Commit 2**: git commit -m "Implement Module 1 & 2: Base fare calculation and Surge Pricing logic"
-* **Commit 3**: git commit -m "Add driver array and random driver assignment feature"
-* **Commit 4**: git commit -m "Develop Module 3: GrabFood delivery logic"
-* **Commit 5**: git commit -m "Implement Struct for Module 4: Save and view Last Booking Record"
-* **Commit 6**: git commit -m "Add Error Handling: Fix cin.fail() infinite loops and invalid inputs"
-* **Commit 7**: git commit -m "Final review: Add About Grab info, code comments and formatting"
+    // Input Validation for Distance (Must be strictly greater than 0)
+    while (true) {
+        cout << "Distance (km): ";
+        cin >> distance;
+        if (cin.fail() || distance <= 0) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Distance must be a positive number.\n";
+        } else {
+            cin.ignore(1000, '\n'); 
+            break;
+        }
+    }
+
+    // Get environment variables for dynamic pricing
+    rain = getYesNoInput("Is it raining? (Y/N): ");
+    peak = getYesNoInput("Is it peak hour? (Y/N): ");
+
+    // Calculate final fares via modular helper function
+    totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
+
+    // Vehicle Recommendation Logic
+    string vehicleType = (pax <= 4) ? "GrabCar" : "Grab6";
+
+    // Data Arrays for Driver Simulation
+    string driverNames[] = {"Ahmad", "Siti", "Muthu", "Mei Ling", "John", "Ali", "Chong", "Fatima"};
+    string grabCarModels[] = {"Perodua Bezza", "Toyota Vios", "Honda City", "Proton Saga", "Nissan Almera"};
+    string grab6Models[] = {"Perodua Alza", "Toyota Innova", "Honda BR-V", "Mitsubishi Xpander"};
+
+    // Randomly assign a driver from the array
+    int numDrivers = sizeof(driverNames) / sizeof(driverNames[0]);
+    string assignedDriver = driverNames[rand() % numDrivers];
+    
+    // Assign proper vehicle model based on capacity recommended
+    string assignedVehicleModel;
+    if (pax <= 4) {
+        int numGrabCar = sizeof(grabCarModels) / sizeof(grabCarModels[0]);
+        assignedVehicleModel = grabCarModels[rand() % numGrabCar];
+    } else {
+        int numGrab6 = sizeof(grab6Models) / sizeof(grab6Models[0]);
+        assignedVehicleModel = grab6Models[rand() % numGrab6];
+    }
+    
+    // Generate Random ETA (Estimated Time of Arrival) between 2 and 12 minutes
+    int eta = (rand() % 11) + 2; 
+
+    // Store details into the global lastBooking struct for Module 4
+    lastBooking.passengerName = passengerName;
+    lastBooking.driverName = assignedDriver;
+    lastBooking.vehicleType = vehicleType + " (" + assignedVehicleModel + ")";
+    lastBooking.pickupLocation = pickup;
+    lastBooking.destination = destination;
+    lastBooking.distance = distance;
+    lastBooking.totalFare = totalFare;
+    lastBooking.hasRecord = true; 
+
+    // Print Electronic Receipt
+    cout << "\n=================================" << endl;
+    cout << "         BOOKING CONFIRMED       " << endl;
+    cout << "=================================" << endl;
+    cout << "Passenger : " << passengerName << endl;
+    cout << "Route     : " << pickup << " -> " << destination << endl;
+    cout << "Vehicle   : " << vehicleType << " (Fits " << pax << " pax)" << endl;
+    
+    // Driver Match Output
+    cout << "---------------------------------" << endl;
+    cout << "Driver Found!" << endl;
+    cout << "Driver    : " << assignedDriver << endl;
+    cout << "Model     : " << assignedVehicleModel << endl;
+    cout << "ETA       : " << eta << " minutes" << endl;
+    
+    // Financial Breakdown
+    cout << "---------------------------------" << endl;
+    cout << "--- FARE BREAKDOWN ---" << endl;
+    cout << fixed << setprecision(2); 
+    cout << "Base Fare      : RM " << baseFare << endl;
+    if (surgeCharge > 0) {
+        cout << "Surge Charge   : RM " << surgeCharge << " (High Demand)" << endl;
+    }
+    cout << "Total Fare     : RM " << totalFare << endl;
+    cout << "---------------------------------" << endl;
+    cout << "* Unlike traditional taxis, Grab guarantees this upfront fare. *" << endl;
+    cout << "=================================\n" << endl;
+}
+
+// --- MODULE 2: FARE ESTIMATOR ---
+// Allows users to check prices without confirming a booking
+void estimateFare() {
+    double distance, baseFare, surgeCharge, totalFare;
+    char rain, peak;
+
+    cout << "\n--- FARE ESTIMATOR ---" << endl;
+    
+    // Input Validation for Distance
+    while (true) {
+        cout << "Enter Distance (km): ";
+        cin >> distance;
+        if (cin.fail() || distance <= 0) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Distance must be greater than 0.\n";
+        } else {
+            cin.ignore(1000, '\n'); 
+            break;
+        }
+    }
+
+    // Input Validation for Rain/Peak
+    rain = getYesNoInput("Is it raining? (Y/N): ");
+    peak = getYesNoInput("Is it peak hour? (Y/N): ");
+
+    // Call helper function
+    totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
+
+    // Display Estimation Output
+    cout << "\n--- ESTIMATION RESULT ---" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Estimated Base Fare: RM " << baseFare << endl;
+    if (surgeCharge > 0) cout << "Estimated Surge    : RM " << surgeCharge << endl;
+    cout << "TOTAL ESTIMATED    : RM " << totalFare << endl;
+    cout << "-------------------------\n" << endl;
+}
+
+// --- MODULE 3: GRABFOOD ORDER ---
+// Simulates ecosystem expansion from just transportation to delivery services
+void orderGrabFood() {
+    int restaurantChoice;
+    double distance, foodCost, deliveryFee, totalAmount;
+    string restaurantName;
+
+    cout << "\n--- GRABFOOD ORDER ---" << endl;
+    cout << "Select a Restaurant:" << endl;
+    cout << "1. McDonald's (RM 15.00)" << endl;
+    cout << "2. KFC        (RM 18.00)" << endl;
+    cout << "3. Pizza Hut  (RM 25.00)" << endl;
+    
+    // Input Validation for Restaurant Selection
+    while (true) {
+        cout << "Enter your choice (1-3): ";
+        cin >> restaurantChoice;
+        if (cin.fail() || restaurantChoice < 1 || restaurantChoice > 3) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid choice. Please select a valid restaurant option (1, 2, or 3).\n";
+        } else {
+            cin.ignore(1000, '\n'); 
+            break;
+        }
+    }
+
+    // Assign price and name based on choice
+    switch (restaurantChoice) {
+        case 1:
+            restaurantName = "McDonald's";
+            foodCost = 15.00;
+            break;
+        case 2:
+            restaurantName = "KFC";
+            foodCost = 18.00;
+            break;
+        case 3:
+            restaurantName = "Pizza Hut";
+            foodCost = 25.00;
+            break;
+    }
+
+    // Input Validation for Delivery Distance
+    while (true) {
+        cout << "Delivery Distance (km): ";
+        cin >> distance;
+        if (cin.fail() || distance <= 0) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Distance must be a positive number.\n";
+        } else {
+            cin.ignore(1000, '\n'); 
+            break;
+        }
+    }
+
+    // Delivery fee logic based on distance
+    if (distance <= 5.0) {
+        deliveryFee = 3.00; // Flat RM3 for close deliveries
+    } else {
+        deliveryFee = 6.00; // Flat RM6 for long distance deliveries
+    }
+
+    totalAmount = foodCost + deliveryFee;
+
+    // Print Receipt
+    cout << "\n=================================" << endl;
+    cout << "       GRABFOOD RECEIPT          " << endl;
+    cout << "=================================" << endl;
+    cout << "Restaurant : " << restaurantName << endl;
+    cout << "Distance   : " << distance << " km" << endl;
+    cout << "---------------------------------" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Food Cost  : RM " << foodCost << endl;
+    cout << "Delivery   : RM " << deliveryFee << endl;
+    cout << "---------------------------------" << endl;
+    cout << "Total Paid : RM " << totalAmount << endl;
+    cout << "=================================\n" << endl;
+}
+
+// --- MODULE 4: VIEW LAST BOOKING ---
+// Recalls struct data from memory (if a ride was successfully booked)
+void viewLastBooking() {
+    cout << "\n--- LAST BOOKING RECORD ---" << endl;
+    
+    // Check struct flag
+    if (!lastBooking.hasRecord) {
+        cout << "[!] No booking records found. Please book a ride first.\n" << endl;
+        return;
+    }
+
+    // Display struct data
+    cout << "Passenger : " << lastBooking.passengerName << endl;
+    cout << "Driver    : " << lastBooking.driverName << endl;
+    cout << "Vehicle   : " << lastBooking.vehicleType << endl;
+    cout << "Route     : " << lastBooking.pickupLocation << " -> " << lastBooking.destination << endl;
+    cout << "Distance  : " << lastBooking.distance << " km" << endl;
+    cout << fixed << setprecision(2);
+    cout << "Total Fare: RM " << lastBooking.totalFare << endl;
+    cout << "---------------------------\n" << endl;
+}
+
+// --- MODULE 5: ABOUT GRAB INNOVATION ---
+// Explains the academic context linking the simulation to disruptive innovation theory
+void aboutGrab() {
+    cout << "\n=================================" << endl;
+    cout << "     ABOUT GRAB INNOVATION       " << endl;
+    cout << "=================================" << endl;
+    cout << "Grab disrupted the traditional taxi industry through digital ride-hailing technology.\n\n";
+    cout << "Using mobile applications, GPS matching, cashless payments, and dynamic pricing,\n";
+    cout << "Grab transformed transportation services across Southeast Asia.\n\n";
+    cout << "This project is based on Christensen's Disruptive Innovation Model." << endl;
+    cout << "=================================\n" << endl;
+}
