@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <limits>
 #include <iomanip> // Required for formatting currency (setprecision)
 #include <cctype>  // Required for toupper()
 #include <cstdlib> // Required for rand() and srand()
@@ -9,7 +8,7 @@
 using namespace std;
 
 // ==========================================
-// STRUCT DEFINITION (Commit 5)
+// STRUCT DEFINITION
 // ==========================================
 struct BookingRecord {
     string passengerName;
@@ -35,8 +34,9 @@ void orderGrabFood();
 void viewLastBooking();
 void aboutGrab();
 
-// Helper Function for Fare Calculation (Modular Programming)
+// Helper Functions for modularity & validation
 double calculateTotalFare(double distance, char rain, char peak, double &baseFare, double &surgeCharge);
+char getYesNoInput(string prompt); // New error-handling helper function
 
 // ==========================================
 // MAIN FUNCTION
@@ -52,12 +52,16 @@ int main() {
         cout << "Please select an option (1-6): ";
         cin >> userChoice;
 
+        // Error Handling: Non-numeric input
         if (cin.fail()) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "\n[!] ERROR: Invalid input. Please enter a number." << endl;
+            cin.ignore(1000, '\n');
+            cout << "\n[!] ERROR: Invalid input. Please enter a valid number." << endl;
             continue;
         }
+        
+        // Clear trailing characters (e.g. user typed "1abc")
+        cin.ignore(1000, '\n');
 
         switch (userChoice) {
             case 1:
@@ -79,6 +83,7 @@ int main() {
                 cout << "\nThank you for using the Grab SuperApp Simulator. Goodbye!" << endl;
                 break;
             default:
+                // Error Handling: Invalid menu options
                 cout << "\n[!] ERROR: Invalid choice. Please select a number between 1 and 6." << endl;
         }
     } while (userChoice != 6);
@@ -103,14 +108,29 @@ void displayMenu() {
     cout << "=================================" << endl;
 }
 
+// --- HELPER FUNCTION: Get Yes/No Input (Commit 6) ---
+char getYesNoInput(string prompt) {
+    char input;
+    while (true) {
+        cout << prompt;
+        cin >> input;
+        
+        if (cin.fail() || (toupper(input) != 'Y' && toupper(input) != 'N')) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            cout << "[!] Invalid input. Please enter 'Y' or 'N'.\n";
+        } else {
+            cin.ignore(1000, '\n'); // Clear buffer
+            return toupper(input);
+        }
+    }
+}
+
 // --- HELPER FUNCTION: Calculate Fare & Surge ---
 double calculateTotalFare(double distance, char rain, char peak, double &baseFare, double &surgeCharge) {
     // Base formula: RM5.00 + (Distance * RM1.20)
     baseFare = 5.00 + (distance * 1.20);
     double surgeMultiplier = 0.0;
-
-    rain = toupper(rain);
-    peak = toupper(peak);
 
     // Surge Logic (nested if-else) based on Christensen's disruptive pricing model
     if (rain == 'Y' && peak == 'Y') {
@@ -131,9 +151,6 @@ void bookGrabRide() {
     char rain, peak;
 
     cout << "\n--- BOOK GRABRIDE ---" << endl;
-    
-    // Clear buffer before reading strings
-    cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
 
     cout << "Enter Passenger Name: ";
     getline(cin, passengerName);
@@ -145,31 +162,36 @@ void bookGrabRide() {
     getline(cin, destination);
 
     // Input Validation for Passengers
-    do {
+    while (true) {
         cout << "Number of Passengers (1-6): ";
         cin >> pax;
-        if(cin.fail() || pax < 1 || pax > 6) {
+        if (cin.fail() || pax < 1 || pax > 6) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "[!] Invalid input. Vehicles can only fit 1 to 6 passengers.\n";
+        } else {
+            cin.ignore(1000, '\n'); // clear buffer
+            break;
         }
-    } while (pax < 1 || pax > 6);
+    }
 
-    // Input Validation for Distance
-    do {
+    // Input Validation for Distance (Reject negative/zero)
+    while (true) {
         cout << "Distance (km): ";
         cin >> distance;
-        if(cin.fail() || distance <= 0) {
+        if (cin.fail() || distance <= 0) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "[!] Invalid input. Distance must be a positive number.\n";
+        } else {
+            cin.ignore(1000, '\n'); // clear buffer
+            break;
         }
-    } while (distance <= 0);
+    }
 
-    cout << "Is it raining? (Y/N): ";
-    cin >> rain;
-    cout << "Is it peak hour? (Y/N): ";
-    cin >> peak;
+    // Input Validation for Rain/Peak using new Error Handling helper
+    rain = getYesNoInput("Is it raining? (Y/N): ");
+    peak = getYesNoInput("Is it peak hour? (Y/N): ");
 
     // Call helper function for pricing
     totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
@@ -199,7 +221,7 @@ void bookGrabRide() {
     // Generate Random ETA between 2 and 12 minutes
     int eta = (rand() % 11) + 2; 
 
-    // --- NEW: Commit 5 Logic (Save to Struct) ---
+    // Save to Struct
     lastBooking.passengerName = passengerName;
     lastBooking.driverName = assignedDriver;
     lastBooking.vehicleType = vehicleType + " (" + assignedVehicleModel + ")";
@@ -244,21 +266,23 @@ void estimateFare() {
 
     cout << "\n--- FARE ESTIMATOR ---" << endl;
     
-    // Input Validation for Distance
-    do {
+    // Input Validation for Distance (Reject negative/zero)
+    while (true) {
         cout << "Enter Distance (km): ";
         cin >> distance;
-        if(cin.fail() || distance <= 0) {
+        if (cin.fail() || distance <= 0) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "[!] Invalid input. Distance must be greater than 0.\n";
+        } else {
+            cin.ignore(1000, '\n'); // clear buffer
+            break;
         }
-    } while (distance <= 0);
+    }
 
-    cout << "Is it raining? (Y/N): ";
-    cin >> rain;
-    cout << "Is it peak hour? (Y/N): ";
-    cin >> peak;
+    // Input Validation for Rain/Peak
+    rain = getYesNoInput("Is it raining? (Y/N): ");
+    peak = getYesNoInput("Is it peak hour? (Y/N): ");
 
     // Call helper function
     totalFare = calculateTotalFare(distance, rain, peak, baseFare, surgeCharge);
@@ -284,15 +308,18 @@ void orderGrabFood() {
     cout << "3. Pizza Hut  (RM 25.00)" << endl;
     
     // Input Validation for Restaurant Selection
-    do {
+    while (true) {
         cout << "Enter your choice (1-3): ";
         cin >> restaurantChoice;
         if (cin.fail() || restaurantChoice < 1 || restaurantChoice > 3) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "[!] Invalid choice. Please select a valid restaurant option (1, 2, or 3).\n";
+        } else {
+            cin.ignore(1000, '\n'); // clear buffer
+            break;
         }
-    } while (restaurantChoice < 1 || restaurantChoice > 3);
+    }
 
     // Assign price and name based on choice
     switch (restaurantChoice) {
@@ -311,15 +338,18 @@ void orderGrabFood() {
     }
 
     // Input Validation for Distance
-    do {
+    while (true) {
         cout << "Delivery Distance (km): ";
         cin >> distance;
-        if(cin.fail() || distance <= 0) {
+        if (cin.fail() || distance <= 0) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cin.ignore(1000, '\n');
             cout << "[!] Invalid input. Distance must be a positive number.\n";
+        } else {
+            cin.ignore(1000, '\n'); // clear buffer
+            break;
         }
-    } while (distance <= 0);
+    }
 
     // Calculate Delivery Fee
     if (distance <= 5.0) {
