@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push *)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\User\\\\Downloads\\\\LDCW_Project\\\\LDCW\\\\poster.png\"\\); Write-Host \"Width: $\\($img.Width\\) x Height: $\\($img.Height\\)\"; $img.Dispose\\(\\))",
+      "Bash(pip list *)",
+      "Bash(pip3 list *)",
+      "Bash(pdftotext -layout \"C:\\\\Users\\\\User\\\\Downloads\\\\LDCW_Project\\\\LDCW\\\\LDCW6123_Group Project \\(Tri2610\\) - new rubrics.pdf\" -)",
+      "Bash(python3 -c ' *)",
+      "Bash(/c/Users/User/AppData/Local/Programs/Python/Python312/python -m pip install pytesseract)",
+      "Read(//c/Program Files/Tesseract-OCR/**)",
+      "Read(//c/Program Files \\(x86\\)/Tesseract-OCR/**)",
+      "Read(//c/Users/**)",
+      "Bash(winget install *)",
+      "Bash(/c/Users/User/AppData/Local/Programs/Python/Python312/python -c ' *)",
+      "Bash(git submodule *)",
+      "Bash(which g++ 2>/dev/null; which clang++ 2>/dev/null; which cl 2>/dev/null; ls /mingw64/bin/g++* 2>/dev/null | head -3)",
+      "Read(//mingw64/**)",
+      "Bash(g++ -std=c++11 -Wall -Wextra -o ldcw.exe ldcw.cpp)",
+      "Bash(g++ -std=c++11 -fsyntax-only -Wall -Wextra ldcw.cpp)",
+      "Bash(g++ -std=c++11 -Wall -Wextra -o /tmp/ldcw_test.exe \"C:\\\\Users\\\\User\\\\Downloads\\\\LDCW_Project\\\\LDCW\\\\ldcw.cpp\")",
+      "Bash(/tmp/ldcw_test.exe *)",
+      "Bash(g++ -std=c++11 -Wall -Wextra -v -o /tmp/ldcw_test.exe \"C:\\\\Users\\\\User\\\\Downloads\\\\LDCW_Project\\\\LDCW\\\\ldcw.cpp\")",
+      "Bash(g++ -std=c++11 -Wall -Wextra -o ldcw_improved.exe ldcw.cpp)",
+      "Bash(g++ -std=c++11 -Wall -Wextra -c ldcw.cpp -o ldcw.o)",
+      "Bash(git stash *)",
+      "Bash(g++ -std=c++11 -Wall -Wextra -o ldcw_orig_test.exe ldcw.cpp)"
+    ]
+  }
+}
